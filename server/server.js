@@ -4,27 +4,24 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
+const expressSession = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 require('dotenv').config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(expressSession({
+  path    : '/',
+  secret : process.env.secret,
+  resave : true,
+  saveUninitialized : false,
+  httpOnly: false,
+  maxAge: null
+}))
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use(cors());
-
-// PASSPORT MIDDLEWARE //
-app.use(passport.initialize());
-app.use(passport.session());
-
-const User = require('./models/User');
-passport.use(new LocalStrategy(User.authenticate()));
-
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 
 // ROUTING //
 const routes = require('./routes/routes.js');

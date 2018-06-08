@@ -18,7 +18,6 @@ export class Nav extends Component {
       </div>
     );
   }
-
 }
 
 const rightButtons = (

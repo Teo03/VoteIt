@@ -1,14 +1,54 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-var passportLocalMongoose = require('passport-local-mongoose');
+SALT_WORK_FACTOR = 10;
 
 const UserSchema = new mongoose.Schema({
-    username: String,
-    password: String 
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
 });
 
-UserSchema.plugin(passportLocalMongoose);
+UserSchema.pre('save', function(next) {
+    const user = this;
 
-const User = mongoose.model("User", UserSchema);
+    //USERNAME CHECK //
+    User.find({username : user.username}, function (err, docs) {
+        if (!docs.length){
+            next();
+        } else {                
+            next(new Error("User Exists"));
+        }
+    });
 
-module.exports = User;
+    //PASSWORD HASHING //
+    if (!user.isModified('password')) {
+      return next();
+    }
+
+    return bcrypt.hash(user.password, 10).then(hashedPassword => {
+        user.password = hashedPassword;
+        return next();
+      })
+      .catch(err => {
+        return next(err);
+      });
+  });
+
+  UserSchema.methods.comparePassword = function(candidatePassword, next) {
+    
+    return bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+      if (err) {
+        return next(err);
+      }
+      return next(null, isMatch);
+    });
+  };
+  
+  const User = mongoose.model('User', UserSchema);
+  module.exports = User;

@@ -2,31 +2,58 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/User');
-const auth = require('../auth/passport.js');
+var logged = false;
 
-router.post('/localsignup', (req, res) => {
+router.post('/localsignup', function(req, res) {
 	const {username, password} = req.body;
-	
+
 	var newUser = new User({
-		username: username
+		username: username,
+		password: password
 	});
 
-	User.register(newUser, password, function (err) {
-		if (err) {
-			if (err.name == 'UserExistsError') {
-				res.send('User with that username already exists');
-			} else if(err.name == 'MissingPasswordError'){
-				res.send('Please enter a password');
-			} else if(err.name == 'MissingUsernameError'){
-				res.send('Please enter a username');
-			}
-			else {
-				res.send('error while registering!', err);
-			}
+	newUser.save(function(err, savedUser) {
+		if(err){
+			res.send('User Exists');
 		} else {
-			res.send('registered');
+			res.send('success');
 		}
 	});
+});
+
+router.post('/locallogin' , function(req, res) {
+	const {username, password} = req.body;
+
+	User.findOne({ username: username })
+    .then(user => {
+      user.comparePassword(password, (err, isMatch) => {
+        if (isMatch) {
+			req.session.user = user;
+			req.session.save();
+			logged = true;
+          return res.send('logged');
+        } else {
+			logged = false;
+			console.log(err);
+          return res.send('Incorrect Password');
+        }
+      });
+    })
+    .catch(err => {
+      return res.send(err);
+    });                         
+});
+
+router.get('/logout', function(req, res){
+	if(req.session){
+		req.session.destroy();
+		res.status(200).send();
+	}
+	logged = false;
+})
+
+router.get('/profile', function(req, res){
+	res.json(req.session.user);
 });
 
 module.exports = router;

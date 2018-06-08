@@ -19,6 +19,7 @@ export class Signup extends React.Component {
         this.showPass = this.showPass.bind(this);
     }
 
+
     handleChange1(e){
         this.setState({
 			username: e.target.value
@@ -32,18 +33,25 @@ export class Signup extends React.Component {
     }
 
     submitForm(){
-        axios.post('/localsignup', {
-            username: this.state.username,
-            password: this.state.password
-        })
-        .then(res => {
-            if(res.data === 'registered') {
-                //redirect to login 
-                this.props.history.push('/loginform');
-            } else {
-                alert(res.data);
-            }
-        });
+        var {username, password} = this.state
+
+        if(username === '' || password === ''){
+            alert('Please enter a new username and password.');
+        } else {
+            axios.post('/localsignup', {
+                username: username,
+                password: password
+            })
+            .then(res => {
+                   if(res.data === 'success'){
+                    this.props.history.push('/loginform');
+                   } else if(res.data === 'logged'){
+                    this.props.history.push('/');
+                   } else {
+                    alert(res.data);
+                   }
+            });
+        }
     }
 
     showPass(){
@@ -63,11 +71,11 @@ export class Signup extends React.Component {
                         <TextField hintText="Username" value={this.state.username} onChange={this.handleChange1}/>
                         <br />
                         <br />
-                        <TextField hintText="Password" type={this.state.show} style={{ marginBottom: '15px' }} value={this.state.password} onChange={this.handleChange2} />
+                        <TextField hintText="Password" type={this.state.show} style={{ marginBottom: '15px' }} value={this.state.password} onChange={this.handleChange2}/>
                         <RaisedButton onClick={this.showPass} size='small' label='SHOW' />
                         <br />
                         <br />
-                        <RaisedButton label="register" primary={true} onClick={this.submitForm}/>
+                        <RaisedButton label="register" primary={true} onClick={this.submitForm} />
                         <br />
                         <h4>or</h4>
                         <RaisedButton className='authbtn1' label="continue with google" backgroundColor='#D50000' />
