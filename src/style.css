@@ -1,7 +1,7 @@
-body {
+body, * {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .btns {
@@ -12,4 +12,22 @@ body {
 
 .authbtn1 {
   margin-bottom: 5px;
+}
+
+.authform {
+  text-align: center;
+}
+
+.login, .signup {
+  display: inline-block;  
+  padding: 20px; 
+}
+
+.auth {
+  text-align: center;
+  padding: 40px; 
+}
+
+.fb, .g {
+  margin-top: 30px;
 }

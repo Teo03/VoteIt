@@ -1,28 +1,26 @@
-import React, { Component } from 'react';
-import AppBar from 'material-ui/AppBar';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FlatButton from 'material-ui/FlatButton';
-
-export class Nav extends Component {
+import React from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+export class Nav extends React.Component {
   render() {
     return (
-      <div>
-      <MuiThemeProvider>
-      <AppBar
-        title="Voting App"
-        showMenuIconButton={false}
-        iconElementRight={rightButtons}
-        style={{ backgroundColor: '#3cba54' }}
-        />
-      </MuiThemeProvider>  
+      <div className='container text-center'>
+        <AppBar position="static" color='default'>
+          <Toolbar>
+            <Typography style={{ flex: 1, fontSize: 25}}>
+            <a href='/'>Voting App</a>
+            </Typography>
+            <a href='/auth'>
+            <IconButton>
+              <AccountCircle />
+            </IconButton>
+            </a>
+          </Toolbar>
+        </AppBar>  
       </div>
     );
   }
 }
-
-const rightButtons = (
-  <div className='text-center btns'>
-   <a href='/loginform'> <FlatButton label="log in" /></a>
-   <a href='/signupform'> <FlatButton label="sign up" /></a>
-  </div>
-);

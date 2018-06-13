@@ -1,8 +1,7 @@
 import React from 'react';
 import {Nav} from './Nav';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
 import axios from 'axios';
 
 export class Signup extends React.Component {
@@ -11,24 +10,26 @@ export class Signup extends React.Component {
         this.state = {
             username: '',
             password: '',
-            show: 'password'
+            show: 'password',
+            error: false
         }
         this.handleChange1 = this.handleChange1.bind(this);
         this.handleChange2 = this.handleChange2.bind(this);
         this.submitForm = this.submitForm.bind(this);
-        this.showPass = this.showPass.bind(this);
     }
 
 
     handleChange1(e){
         this.setState({
-			username: e.target.value
+            username: e.target.value,
+            error: false
         });
     }
 
     handleChange2(e){
         this.setState({
-            password: e.target.value
+            password: e.target.value,
+            error: false
         });
     }
 
@@ -45,46 +46,42 @@ export class Signup extends React.Component {
             .then(res => {
                    if(res.data === 'success'){
                     this.props.history.push('/loginform');
+                    this.setState({error: false});
                    } else if(res.data === 'logged'){
                     this.props.history.push('/');
+                    this.setState({error: false});
                    } else {
                     alert(res.data);
+                    this.setState({error: true});
                    }
             });
         }
     }
 
-    showPass(){
-        this.setState({
-            show: this.state.show === 'input' ? 'password' : 'input'
-        })
-    }
-
     render() {
         return (
             <div>
-            <Nav />
-            <div className='text-center'>
-                <h1>Sign up</h1>
-                <MuiThemeProvider>
-                    <div>
-                        <TextField hintText="Username" value={this.state.username} onChange={this.handleChange1}/>
+                <Nav />
+                <div className='text-center'>
+                    <h1>Sign up</h1>
+                    <div className='container'>
+                        <Input
+                        placeholder="Username"
+                        value={this.state.username} onChange={this.handleChange1}  style={{fontSize: 20}} error={this.state.error}
+                        />
                         <br />
                         <br />
-                        <TextField hintText="Password" type={this.state.show} style={{ marginBottom: '15px' }} value={this.state.password} onChange={this.handleChange2}/>
-                        <RaisedButton onClick={this.showPass} size='small' label='SHOW' />
+                        <br />
+                        <Input
+                        placeholder="Password"
+                        value={this.state.password} onChange={this.handleChange2} type='password' style={{fontSize: 20}} error={this.state.error}
+                        />
                         <br />
                         <br />
-                        <RaisedButton label="register" primary={true} onClick={this.submitForm} />
-                        <br />
-                        <h4>or</h4>
-                        <RaisedButton className='authbtn1' label="continue with google" backgroundColor='#D50000' />
-                        <br />
-                        <RaisedButton className='authbtn2' label="continue with facebook" backgroundColor='#42A5F5' />
+                        <Button variant='raised' color='default' size="large" onClick={this.submitForm}  style={{fontSize: 15}} >REGISTER</Button>
                     </div>
-                </MuiThemeProvider>
+                </div>
             </div>
-        </div>
         );
     }
 }

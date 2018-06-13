@@ -1,8 +1,7 @@
 import React from 'react';
 import {Nav} from './Nav';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
 import axios from 'axios';
 
 export class Login extends React.Component {
@@ -10,7 +9,8 @@ export class Login extends React.Component {
         super();
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            error: false
         }
         this.login = this.login.bind(this);
         this.handleChange1 = this.handleChange1.bind(this);
@@ -28,8 +28,10 @@ export class Login extends React.Component {
             })
             .then(res => {
                 if(res.data === 'logged'){
+                    this.setState({error: false});
                     this.props.history.push('/');
                 } else {
+                    this.setState({error: true});
                     alert(res.data);
                 }
             });
@@ -38,40 +40,44 @@ export class Login extends React.Component {
 
     handleChange1(e){
         this.setState({
-			username: e.target.value
+            username: e.target.value,
+            error: false
         });
     }
 
     handleChange2(e){
         this.setState({
-            password: e.target.value
+            password: e.target.value,
+            error: false
         });
     }
 
     render() {
         return (
             <div>
-            <Nav />
-            <div className='text-center'>
-                <h1>Login</h1>
-                <MuiThemeProvider>
-                    <div>
-                        <TextField hintText="Username"  value={this.state.username} onChange={this.handleChange1}/>
+                <Nav />
+                <div className='text-center'>
+                    <h1>Login</h1>
+                    <div className='container'>
+                        <Input
+                        placeholder="Username"
+                        value={this.state.username} onChange={this.handleChange1}  style={{fontSize: 20}} error={this.state.error}
+                        />
                         <br />
                         <br />
-                        <TextField hintText="Password" type="password" value={this.state.password} onChange={this.handleChange2}/>
+                        <br />
+                        <Input
+                        placeholder="Password"
+                        value={this.state.password} onChange={this.handleChange2} type='password' style={{fontSize: 20}} error={this.state.error}
+                        />
                         <br />
                         <br />
-                        <RaisedButton label="login" primary={true} onClick={this.login}/>
-                        <br />
-                        <h4>or</h4>
-                        <RaisedButton className='authbtn1' label="continue with google" backgroundColor='#D50000' />
-                        <br />
-                        <RaisedButton className='authbtn2' label="continue with facebook" backgroundColor='#42A5F5' />
+                        <Button variant="raised" size="large" color="default"  style={{fontSize: 15}} onClick={this.login}>
+                        <h4>Login</h4>
+                        </Button>
                     </div>
-                </MuiThemeProvider>
+                </div>
             </div>
-        </div>
         );
     }
 }

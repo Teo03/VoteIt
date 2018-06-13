@@ -31,16 +31,20 @@ router.post('/locallogin' , function(req, res) {
 			req.session.user = user;
 			req.session.save();
 			logged = true;
-          return res.send('logged');
+          	return res.send('logged');
         } else {
 			logged = false;
 			console.log(err);
-          return res.send('Incorrect Password');
+          	return res.send('Incorrect Password');
         }
       });
     })
     .catch(err => {
-      return res.send(err);
+      if(err == "TypeError: Cannot read property 'comparePassword' of null"){
+				return res.send('Invalid User');
+			} else if(err){
+				return res.send(err);
+			}
     });                         
 });
 
