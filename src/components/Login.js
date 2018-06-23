@@ -29,7 +29,7 @@ export class Login extends React.Component {
             .then(res => {
                 if(res.data === 'logged'){
                     this.setState({error: false});
-                    this.props.history.push('/');
+                    this.props.history.push('/profile');
                 } else {
                     this.setState({error: true});
                     alert(res.data);

@@ -4,7 +4,22 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import axios from 'axios';
+
 export class Nav extends React.Component {
+  constructor(){
+    super();
+    this.state = { 
+      redirect: '/auth'
+    }
+  }
+
+  componentDidMount(){
+    return axios.get("/user").then(response => {
+      this.setState({ redirect: response.data });
+    });
+  }
+
   render() {
     return (
       <div className='container text-center'>
@@ -13,7 +28,7 @@ export class Nav extends React.Component {
             <Typography style={{ flex: 1, fontSize: 25}}>
             <a href='/'>Voting App</a>
             </Typography>
-            <a href='/auth'>
+            <a href={this.state.redirect}>
             <IconButton>
               <AccountCircle />
             </IconButton>

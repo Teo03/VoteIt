@@ -28,6 +28,10 @@ body, * {
   padding: 40px; 
 }
 
-.fb, .g {
+.fb, .g  {
   margin-top: 30px;
+}
+
+.g a {
+  text-decoration: none;
 }

@@ -8,6 +8,7 @@ const expressSession = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
+var passportSetup = require('./passport_conf.js');
 require('dotenv').config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,6 +23,10 @@ app.use(expressSession({
 }))
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use(cors());
+
+// PASSPORT SETUP //
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ROUTING //
 const routes = require('./routes/routes.js');

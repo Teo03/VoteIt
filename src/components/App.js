@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Polls } from './Polls.js';
+import { PollsView } from './PollsView';
 import { Nav } from './Nav';
 export class App extends Component {
   render() {
@@ -7,7 +7,7 @@ export class App extends Component {
       <div>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
         <Nav />
-        <Polls />
+        <PollsView />
       </div>
     );
   }

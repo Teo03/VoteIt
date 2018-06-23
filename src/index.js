@@ -7,6 +7,8 @@ import {App} from './components/App.js';
 import {Login} from './components/Login.js';
 import {Signup} from './components/Signup.js';
 import {Auth} from './components/Auth.js';
+import {Profile} from './components/Profile.js';
+import {newPoll} from './components/newPoll.js';
 
 ReactDOM.render(
     <Router>
@@ -15,6 +17,8 @@ ReactDOM.render(
         <Route exact path='/signupform' component={Signup}/>
         <Route exact path='/loginform' component={Login} />
         <Route exact path='/auth' component={Auth} />
+        <Route exact path='/profile' component={Profile}/>
+        <Route exact path='/newPoll' component={newPoll}/>
       </div>
     </Router>
    ,

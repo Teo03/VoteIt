@@ -45,14 +45,14 @@ export class Signup extends React.Component {
             })
             .then(res => {
                    if(res.data === 'success'){
-                    this.props.history.push('/loginform');
-                    this.setState({error: false});
+                        this.props.history.push('/loginform');
+                        this.setState({error: false});
                    } else if(res.data === 'logged'){
-                    this.props.history.push('/');
-                    this.setState({error: false});
+                        this.props.history.push('/');
+                        this.setState({error: false});
                    } else {
-                    alert(res.data);
-                    this.setState({error: true});
+                        alert(res.data);
+                        this.setState({error: true});
                    }
             });
         }
