@@ -14,19 +14,19 @@ export class Nav extends React.Component {
     }
   }
 
-  componentDidMount(){
-    return axios.get("/user").then(response => {
+  componentDidMount = () => {
+    return axios.get("/userLogged").then(response => {
       this.setState({ redirect: response.data });
     });
   }
 
-  render() {
+  render = () => {
     return (
       <div className='container text-center'>
         <AppBar position="static" color='default'>
           <Toolbar>
             <Typography style={{ flex: 1, fontSize: 25}}>
-            <a href='/'>Voting App</a>
+            <a href='/'>VoteIt</a>
             </Typography>
             <a href={this.state.redirect}>
             <IconButton>

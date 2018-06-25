@@ -12,14 +12,14 @@ export class Profile extends Component {
     this.logout = this.logout.bind(this);
   }
 
-  logout(){
+  logout = () => {
     axios.get("/logout").then(() => {
         this.props.history.push('/auth');
     });
   }
 
-  componentDidMount(){
-    axios.get("/user").then(response => {
+  componentDidMount = () => {
+    axios.get("/userLogged").then(response => {
         this.props.history.push(response.data);
     });
     return axios.get("/info").then(response => {
@@ -27,7 +27,7 @@ export class Profile extends Component {
     });
   }
 
-  render() {
+  render = () => {
     return (
       <div className='container'>
         <Nav />

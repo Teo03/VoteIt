@@ -5,7 +5,7 @@ const User = require('../models/User');
 const Polls = require('../models/Polls');
 
 // LOCAL SIGNUP //
-router.post('/localsignup', function(req, res) {
+router.post('/localsignup', (req, res) => {
 	const {username, password} = req.body;
 
 	var newUser = new User({
@@ -13,7 +13,7 @@ router.post('/localsignup', function(req, res) {
 		password: password
 	});
 
-	newUser.save(function(err, savedUser) {
+	newUser.save((err, savedUser) => {
 		if(err){
 			res.send('User Exists');
 		} else {
@@ -24,16 +24,16 @@ router.post('/localsignup', function(req, res) {
 });
 
 // LOCAL LOGIN //
-router.post('/locallogin' , function(req, res) {
+router.post('/locallogin' , (req, res) => {
 	const {username, password} = req.body;
 
 	User.findOne({ username: username })
     .then(user => {
       user.comparePassword(password, (err, isMatch) => {
         if (isMatch) {
-						req.session.user = user;
-						req.session.save();
-						console.log('local user is: ' + req.session.user);
+			req.session.user = user;
+			req.session.save();
+			console.log('local user is: ' + req.session.user);
           	return res.send('logged');
         } else {
           	return res.send('Incorrect Password');
@@ -65,7 +65,7 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', { failur
 	res.redirect('http://localhost:3000/profile');
   });
 
-router.get('/logout', function(req, res){
+router.get('/logout', (req, res) => {
 	if(req.session){
 		req.session.destroy();
 		req.logOut();
@@ -73,7 +73,7 @@ router.get('/logout', function(req, res){
 	}
 });
 
-router.get('/user', function(req, res){
+router.get('/userLogged', (req, res) => {
 	if(req.session.user){
 		res.send('/profile');
 	} else {
@@ -81,18 +81,30 @@ router.get('/user', function(req, res){
 	}
 });
 
-router.get('/info', function(req, res){
+router.get('/info', (req, res) => {
 	return res.send(req.session.user);
 });
 
 
-router.get('/getPollData', function(req, res){
+router.get('/getPollData', (req, res) => {
 	Polls.find({}, function(err, data) {
 		res.send(data);
 	});
 });
 
-router.post('/add', function(req, res){
+router.get('/getPoll/:id(*)', (req, res) => {
+	var pollId = req.params.id;
+	Polls.find({_id: pollId}, (err, poll) => {
+		if(err){
+			console.log(err);
+			return res.send('err');
+		} else {
+			return res.send(poll);
+		}
+	});
+});
+
+router.post('/add', (req, res) => {
 	const { name, options, creator } = req.body;
 	console.log(name, options, creator);
 
@@ -109,6 +121,20 @@ router.post('/add', function(req, res){
 			res.send('new poll: ' + savedPoll);
 		}
 	});
+});
+
+router.post('/submitVote', (req, res) => {
+	const {pollId, pollOption} = req.body;
+	Polls.findOne({_id: pollId}
+		).update({'options.option': pollOption}, {'$inc': {
+			'options.$.votes': 1,
+		}}, function(err){
+			if(err){
+					return console.log(err);
+				} else {
+					return res.send('success');
+				}
+		});
 });
 
 module.exports = router;

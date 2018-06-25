@@ -7,17 +7,22 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 
 export class newPoll extends React.Component {
-    constructor(){
+    constructor() {
         super();
         this.state = {
             pollName: '',
             options: [],
             tempOption: '',
             open: false,
-            error: false
+            error: false,
+            open: false,
+            message: ''
         }
         this.add = this.add.bind(this);
         this.handleChange1 = this.handleChange1.bind(this);
@@ -27,7 +32,7 @@ export class newPoll extends React.Component {
         this.submitPoll = this.submitPoll.bind(this);
     }
 
-    add(){
+    add = () => {
         var option = {
             option: this.state.tempOption,
             votes: 0
@@ -36,27 +41,31 @@ export class newPoll extends React.Component {
         this.setState({ tempOption: '' });
     }
     
-    handleChange1(e){
-        this.setState({ pollName: e.target.value, error: false});
-    }
-
-    handleChange2(e){
-        this.setState({ tempOption: e.target.value, error: false});
-    }
-
-    handleClickOpen() {
-        this.setState({ open: true, error: false });
-      };
-    
-    handleClose() {
+    handleClose = () => {
         this.setState({ open: false });
     };
 
-    submitPoll(){
+    handleChange1 = (e) => {
+        this.setState({ pollName: e.target.value, error: false});
+    }
+
+    handleChange2 = (e) => {
+        this.setState({ tempOption: e.target.value, error: false});
+    }
+
+    handleClickOpen = () => {
+        this.setState({ open: true, error: false });
+      };
+    
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
+    submitPoll = () => {
         var {pollName, options} = this.state;
-        if(pollName === '' || options == 0){
+        if(pollName === '' || options.length === 0){
             this.setState({error: true});
-            return alert('Please enter a poll name and add options.');
+            return this.setState({open: true, message: 'Please enter a name and add options.'});
         } else {
             return axios.get("/info").then(response => {
                 axios.post('/add', {
@@ -76,7 +85,14 @@ export class newPoll extends React.Component {
         }
     }
 
-    render(){
+    render = () => {
+        var options = this.state.options;
+        var optionsArr = [];
+        for (var key in options) {
+          if (options.hasOwnProperty(key)) {
+            optionsArr.push(options[key]['option']);
+          }
+        }
         return (
             <div className='container text-center'>
                 <Nav />
@@ -90,7 +106,13 @@ export class newPoll extends React.Component {
                 <h4>You can add as many options as you want</h4>
                 <div className='container'>
                     <h3 className='options'>
-                        {this.state.tempDisplayOptions}
+                    {optionsArr.map((option, index) => (
+                        <Paper elevation={4} key={index}>
+                        <Typography variant="headline" component="h2" style={{fontSize: 40}}>
+                          {option}
+                        </Typography>
+                      </Paper>
+                    ))}
                     </h3>
                 </div>
                 <Button variant="raised" size="large" color="default" style={{fontSize: 15}} onClick={this.handleClickOpen}>ADD</Button>

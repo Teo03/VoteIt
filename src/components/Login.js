@@ -2,6 +2,7 @@ import React from 'react';
 import {Nav} from './Nav';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
+import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 
 export class Login extends React.Component {
@@ -10,17 +11,19 @@ export class Login extends React.Component {
         this.state = {
             username: '',
             password: '',
-            error: false
+            error: false,
+            open: false,
+            message: ''
         }
         this.login = this.login.bind(this);
         this.handleChange1 = this.handleChange1.bind(this);
         this.handleChange2 = this.handleChange2.bind(this);
     }
 
-    login(){
+    login = () => {
         var {username, password} = this.state
         if(username === '' || password === ''){
-            alert('Please enter your username and password.');
+            this.setState({open: true, message: 'Please enter your username and password.'});
         } else {
             axios.post('/locallogin', {
                 username: username,
@@ -31,31 +34,43 @@ export class Login extends React.Component {
                     this.setState({error: false});
                     this.props.history.push('/profile');
                 } else {
-                    this.setState({error: true});
-                    alert(res.data);
+                    this.setState({error: true, open: true, message: res.data});
                 }
             });
         }
     }  
 
-    handleChange1(e){
+    handleChange1= (e) => {
         this.setState({
             username: e.target.value,
             error: false
         });
     }
 
-    handleChange2(e){
+    handleChange2 = (e) => {
         this.setState({
             password: e.target.value,
             error: false
         });
     }
 
-    render() {
+    handleClose = () => {
+        this.setState({open: false});
+    }
+
+    render = () => {
         return (
             <div>
                 <Nav />
+                <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={this.state.open}
+                autoHideDuration={4000} 
+                onClose={this.handleClose}
+                message={<h4>{this.state.message}</h4>}/>
                 <div className='text-center'>
                     <h1>Login</h1>
                     <div className='container'>

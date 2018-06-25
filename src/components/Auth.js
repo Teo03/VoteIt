@@ -4,13 +4,13 @@ import {Nav} from './Nav';
 import axios from 'axios';
 export class Auth extends React.Component {
 
-  componentDidMount(){
-    axios.get("/user").then(response => {
+  componentDidMount = () => {
+    axios.get("/userLogged").then(response => {
         this.props.history.push(response.data);
     });
   }
 
-  render() {
+  render = () => {
     return (
       <div>
         <Nav />
