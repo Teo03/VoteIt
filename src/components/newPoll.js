@@ -38,7 +38,7 @@ export class newPoll extends React.Component {
             votes: 0
         }
         this.state.options.push(option);
-        this.setState({ tempOption: '' });
+        this.setState({ tempOption: '', open: false});
     }
     
     handleClose = () => {

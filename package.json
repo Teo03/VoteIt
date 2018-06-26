@@ -1,8 +1,9 @@
 {
-  "name": "voting_app",
+  "name": "VoteIt",
   "version": "0.1.0",
   "private": false,
   "author": "Teodor Bogoeski",
+  "license": "MIT",
   "devDependencies": {
     "concurrently": "^3.5.1",
     "react-scripts": "^1.1.4"
