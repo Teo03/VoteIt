@@ -21,7 +21,7 @@ export class newPoll extends React.Component {
             tempOption: '',
             open: false,
             error: false,
-            open: false,
+            openMessage: false,
             message: ''
         }
         this.add = this.add.bind(this);
@@ -45,6 +45,10 @@ export class newPoll extends React.Component {
         this.setState({ open: false });
     };
 
+    handleCloseMessage = () => {
+        this.setState({ openMessage: false });
+      };
+
     handleChange1 = (e) => {
         this.setState({ pollName: e.target.value, error: false});
     }
@@ -56,16 +60,11 @@ export class newPoll extends React.Component {
     handleClickOpen = () => {
         this.setState({ open: true, error: false });
       };
-    
-    handleClose = () => {
-        this.setState({ open: false });
-    };
 
     submitPoll = () => {
         var {pollName, options} = this.state;
         if(pollName === '' || options.length === 0){
-            this.setState({error: true});
-            return this.setState({open: true, message: 'Please enter a name and add options.'});
+            this.setState({openMessage: true, message: 'Please enter a name and add options.'});
         } else {
             return axios.get("/info").then(response => {
                 axios.post('/add', {
@@ -95,48 +94,57 @@ export class newPoll extends React.Component {
         }
         return (
             <div className='container text-center'>
-                <Nav />
-                <h2>Create a Poll</h2>
-                <br />
-                <h3>Enter the name of your Poll</h3>
-                <br />
-                <Input value={this.state.pollName} onChange={this.handleChange1} style={{fontSize: 30}} error={this.state.error}/>
-                <br />
-                <h3>Options</h3>
-                <h4>You can add as many options as you want</h4>
-                <div className='container'>
-                    <h3 className='options'>
+            <Nav />
+            <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            open={this.state.openMessage}
+            autoHideDuration={4000} 
+            onClose={this.handleCloseMessage}
+            message={<h4>{this.state.message}</h4>}/>
+            <h2>Create a Poll</h2>
+            <br />
+            <h3>Enter the name of your Poll</h3>
+            <br />
+            <Input value={this.state.pollName} onChange={this.handleChange1} style={{fontSize: 30}} error={this.state.error}/>
+            <br />
+            <h3>Options</h3>
+            <h4>You can add as many options as you want</h4>
+            <div className='container'>
+                <h3 className='options'>
                     {optionsArr.map((option, index) => (
-                        <Paper elevation={4} key={index}>
+                    <Paper elevation={4} key={index}>
                         <Typography variant="headline" component="h2" style={{fontSize: 40}}>
-                          {option}
+                            {option}
                         </Typography>
-                      </Paper>
+                    </Paper>
                     ))}
-                    </h3>
-                </div>
-                <Button variant="raised" size="large" color="default" style={{fontSize: 15}} onClick={this.handleClickOpen}>ADD</Button>
-                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle style={{fontSize: 30}}>New Option</DialogTitle>
-                    <DialogContent className='text-center'>
-                        <DialogContentText style={{fontSize: 20}}>
+                </h3>
+            </div>
+            <Button variant="raised" size="large" color="default" style={{fontSize: 15}} onClick={this.handleClickOpen}>ADD</Button>
+            <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle style={{fontSize: 30}}>New Option</DialogTitle>
+                <DialogContent className='text-center'>
+                    <DialogContentText style={{fontSize: 20}}>
                         Type the option to vote on for your poll below:
-                        </DialogContentText>
-                        <Input style={{fontSize: 25}} value={this.state.tempOption} onChange={this.handleChange2}/>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="secondary" style={{fontSize: 15}}>
+                    </DialogContentText>
+                    <Input style={{fontSize: 25}} value={this.state.tempOption} onChange={this.handleChange2}/>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="secondary" style={{fontSize: 15}}>
                         Cancel
-                        </Button>
-                        <Button onClick={this.add} color="primary" style={{fontSize: 15}}>
+                    </Button>
+                    <Button onClick={this.add} color="primary" style={{fontSize: 15}}>
                         ADD OPTION
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                <br />
-                <br />
-                <Button variant="raised" size="large" color="primary" style={{fontSize: 20}} onClick={this.submitPoll}>SUBMIT</Button>
-                </div>
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <br />
+            <br />
+            <Button variant="raised" size="large" color="primary" style={{fontSize: 20}} onClick={this.submitPoll}>SUBMIT</Button>
+        </div>
         );
     }
 }

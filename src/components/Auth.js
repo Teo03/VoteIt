@@ -41,7 +41,7 @@ export class Auth extends React.Component {
                 </div>
                   <div className='g'> 
                   <a href='http://localhost:9000/auth/google'>
-                      <Button variant="raised" size="large" color="secondary" onClick={() => axios.get('/google')}>
+                      <Button variant="raised" size="large" color="secondary">
                         <h4>CONTINUE WITH GOOGLE</h4>
                       </Button>
                       </a>

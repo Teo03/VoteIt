@@ -19,7 +19,7 @@ export class PollLayout extends React.Component {
       option: '',
       open: false,
       disabled: false,
-      open: false,
+      openMessage: false,
       message: ''
     }
     this.handleChange = this.handleChange.bind(this);
@@ -36,10 +36,7 @@ export class PollLayout extends React.Component {
             pollId: this.props.match.params.id
         }).then(res => {
             if (res.data === 'success') {
-                this.setState({
-                    disabled: true
-                });
-                this.setState({open: true, message: 'Thanks for voting! Voted for ' + this.state.option});
+                this.setState({disabled: true, openMessage: true, message: 'Thanks for voting! Voted for ' + this.state.option});
                 this.getPoll();
             } else {
                 this.setState({
@@ -94,36 +91,36 @@ export class PollLayout extends React.Component {
    // console.log(optionsArr, data)
     return (
       <div className='container text-center'>
-    <Nav />
-    <Snackbar
-    anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-    }}
-    open={this.state.open}
-    autoHideDuration={4000} 
-    onClose={this.handleClose}
-    message={<h4>{this.state.message}</h4>}/>
+        <Nav />
+        <Snackbar
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+        }}
+        open={this.state.openMessage}
+        autoHideDuration={4000} 
+        onClose={this.handleClose}
+        message={<h4>{this.state.message}</h4>}/>
 
-    <h1>{this.state.name}</h1>
-    <h3>Created by {this.state.creator}</h3>
-    <br />
-    <br />
-    <form>
-        <FormControl style={{minWidth: 250, minHeight: 100}}>
-            <InputLabel htmlFor="demo-controlled-open-select">Option</InputLabel>
-            <Select style={{fontSize: 30}} open={this.state.open} onClose={this.handleClose} onOpen={this.handleOpen} onChange={this.handleChange}
-                value={this.state.option}>
-                {optionsArr.map(option => (
-                <MenuItem style={{fontSize: 30}} key={option} value={option}> {option}
-                </MenuItem>
-                ))}
-            </Select>
-        </FormControl>
-    </form>
-    <Button variant='raised' color='secondary' size="large" style={{fontSize: 15, marginBottom: 50}} onClick={this.addVote} disabled={this.state.disabled}>SUBMIT VOTE</Button>
-    <Chart labels={optionsArr} data={data}/>
-    </div>
+        <h1>{this.state.name}</h1>
+        <h3>Created by {this.state.creator}</h3>
+        <br />
+        <br />
+        <form>
+            <FormControl style={{minWidth: 250, minHeight: 100}}>
+                <InputLabel htmlFor="demo-controlled-open-select">Option</InputLabel>
+                <Select style={{fontSize: 30}} open={this.state.open} onClose={this.handleClose} onOpen={this.handleOpen} onChange={this.handleChange}
+                    value={this.state.option}>
+                    {optionsArr.map(option => (
+                    <MenuItem style={{fontSize: 30}} key={option} value={option}> {option}
+                    </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </form>
+        <Button variant='raised' color='secondary' size="large" style={{fontSize: 15, marginBottom: 50}} onClick={this.addVote} disabled={this.state.disabled}>SUBMIT VOTE</Button>
+        <Chart labels={optionsArr} data={data}/>
+      </div>
     );
   }
 }
