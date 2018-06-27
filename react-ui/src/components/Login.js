@@ -2,7 +2,6 @@ import React from 'react';
 import {Nav} from './Nav';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
-import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 
 export class Login extends React.Component {
@@ -11,9 +10,7 @@ export class Login extends React.Component {
         this.state = {
             username: '',
             password: '',
-            error: false,
-            open: false,
-            message: ''
+            error: false
         }
         this.login = this.login.bind(this);
         this.handleChange1 = this.handleChange1.bind(this);
@@ -23,7 +20,7 @@ export class Login extends React.Component {
     login = () => {
         var {username, password} = this.state
         if(username === '' || password === ''){
-            this.setState({open: true, message: 'Please enter your username and password.'});
+            return alert('Please enter your username and password.');
         } else {
             axios.post('/locallogin', {
                 username: username,
@@ -62,15 +59,6 @@ export class Login extends React.Component {
         return (
             <div>
                 <Nav />
-                <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={this.state.open}
-                autoHideDuration={4000} 
-                onClose={this.handleClose}
-                message={<h4>{this.state.message}</h4>}/>
                 <div className='text-center'>
                     <h1>Login</h1>
                     <div className='container'>
