@@ -1,30 +1,47 @@
-'use strict';
-
 const express = require('express');
 const app = express();
 const path = require('path');
-const bodyParser = require('body-parser');
-const expressSession = require('express-session');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const passport = require('passport');
-var passportSetup = require('./passport_conf.js');
-require('dotenv').config();
+const cluster = require('cluster');
+const numCPUs = require('os').cpus().length;
+const PORT = process.env.PORT || 5000;
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(expressSession({
-  path    : '/',
-  secret : process.env.secret,
-  resave : true,
-  saveUninitialized : false,
-  httpOnly: false,
-  maxAge: null
-}))
-app.use(express.static(path.resolve(__dirname, '..', 'public')));
-app.use(cors());
+// Multi-process to utilize all CPU cores.
+if (cluster.isMaster) {
+  console.error(`Node cluster master ${process.pid} is running`);
 
-// PASSPORT SETUP //
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.error(`Node cluster worker ${worker.process.pid} exited: code ${code}, signal ${signal}`);
+  });
+
+} else {
+  const bodyParser = require('body-parser');
+  const expressSession = require('express-session');
+  const cors = require('cors');
+  const mongoose = require('mongoose');
+  const passport = require('passport');
+  require('dotenv').config();
+  
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.use(expressSession({
+    path    : '/',
+    secret : process.env.secret,
+    resave : true,
+    saveUninitialized : false,
+    httpOnly: false,
+    maxAge: null
+  }));
+
+  // Priority serve any static files.
+  app.use(express.static(path.resolve(__dirname, '../src/build')));
+  app.use(cors());    
+
+  // PASSPORT SETUP //
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -39,16 +56,18 @@ mongoose.connect(process.env.DB)
 .catch(error => {
   console.log(error.message)
 })
+  // Answer API requests.
+  app.get('/api', function (req, res) {
+    res.set('Content-Type', 'application/json');
+    res.send('{"message":"Hello from the custom server!"}');
+  });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '..', 'public', 'index.html'));
-});
+  // All remaining requests return the React app, so it can handle routing.
+  app.get('*', function(request, response) {
+    response.sendFile(path.resolve(__dirname, '../src/build', 'index.html'));
+  });
 
-let PORT = 9000;
-if(process.env.NODE_ENV == 'production'){
-  PORT = 80;
+  app.listen(PORT, function () {
+    console.error(`Node cluster worker ${process.pid}: listening on port ${PORT}`);
+  });
 }
-
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}!`);
-});
