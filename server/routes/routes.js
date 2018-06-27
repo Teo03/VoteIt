@@ -5,55 +5,29 @@ const User = require('../models/User');
 const Polls = require('../models/Polls');
 
 // LOCAL SIGNUP //
-router.post('/localsignup', (req, res) => {
-	const {username, password} = req.body;
+router.post('/localsignup', function(req, res, next) {
+	console.log('registering user');
+  	User.register(new User({username: req.body.username}), req.body.password, function(err) {
+    if (err) {
+      res.send('Try using a different username');
+      return next(err);
+    }
 
-	var newUser = new User({
-		username: username,
-		password: password
-	});
+    res.send('success')
 
-	newUser.save((err, savedUser) => {
-		if(err){
-			res.send('User Exists');
-		} else {
-			res.send('success');
-			console.log('new local user: ' + newUser);
-		}
-	});
-});
+    res.redirect('/');
+  });
+  });
+  // LOCAL LOGIN //
+  router.post('/locallogin', passport.authenticate('local'), function(req, res) {
+	res.send('logged');
+  });
 
-// LOCAL LOGIN //
-router.post('/locallogin' , (req, res) => {
-	const {username, password} = req.body;
-
-	User.findOne({ username: username })
-    .then(user => {
-      user.comparePassword(password, (err, isMatch) => {
-        if (isMatch) {
-			req.session.user = user;
-			req.session.save();
-			console.log('local user is: ' + req.session.user);
-			return res.send('logged');
-        } else {
-			return res.send('Incorrect Password');
-        }
-      });
-    })
-    .catch(err => {
-      if(err == "TypeError: Cannot read property 'comparePassword' of null"){
-					return res.send('Invalid User');
-			} else if(err){
-					return res.send(err);
-			}
-  });                         
-});
-
+  
 // GOOGLE AUTHENTICATION //
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 router.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
-	req.session.user = req.user;
 	res.redirect('https://vote-it-app.herokuapp.com/profile');
 });
 
@@ -61,22 +35,18 @@ router.get('/auth/google/callback', passport.authenticate('google'), function(re
 router.get('/auth/facebook', passport.authenticate('facebook'));
  
 router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/loginform' }), function(req, res) {
-	req.session.user = req.user;
 	res.redirect('https://vote-it-app.herokuapp.com/profile');
   });
 
 router.get('/logout', (req, res) => {
 	if(req.session){
-		req.clearCookie("session");
-		req.clearCookie("session.sig");
-		req.logOut();
-		req.session.destroy()
+		req.logout();
 		res.status(200).send();
 	}
 });
 
 router.get('/userLogged', (req, res) => {
-	if(req.session.user){
+	if(req.user){
 		res.send('/profile');
 	} else {
 		res.send('/auth');
@@ -84,7 +54,7 @@ router.get('/userLogged', (req, res) => {
 });
 
 router.get('/info', (req, res) => {
-	return res.send(req.session.user);
+	return res.send(req.user);
 });
 
 

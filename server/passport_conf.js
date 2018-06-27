@@ -1,9 +1,16 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 const GoogleUser = require('./models/GoogleUser');
 const FacebookUser = require('./models/FacebookUser');
 require('dotenv').config();
+
+const User = require('./models/User');
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
