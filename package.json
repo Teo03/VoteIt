@@ -34,6 +34,6 @@
   ],
   "scripts": {
     "start": "node server",
-    "heroku-postbuild": "cd src/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   }
 }
