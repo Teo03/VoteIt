@@ -25,16 +25,14 @@ if (cluster.isMaster) {
   const mongoose = require('mongoose');
   const passport = require('passport');
   require('dotenv').config();
+  require('./passport_conf.js')(passport);
   
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-  app.use(expressSession({
-    path    : '/',
-    secret : process.env.secret,
-    resave : true,
-    saveUninitialized : false,
-    httpOnly: false,
-    maxAge: null
+  app.use(require('cookie-session')({
+    secret: process.env.secret,
+    path: '/',
+    httpOnly: false
   }));
 
   // Priority serve any static files.

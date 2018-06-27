@@ -31,7 +31,8 @@ export class Login extends React.Component {
                     this.setState({error: false});
                     this.props.history.push('/profile');
                 } else {
-                    this.setState({error: true, open: true, message: res.data});
+                    this.setState({error: true});
+                    alert(res.data);
                 }
             });
         }
@@ -49,10 +50,6 @@ export class Login extends React.Component {
             password: e.target.value,
             error: false
         });
-    }
-
-    handleClose = () => {
-        this.setState({open: false});
     }
 
     render = () => {
