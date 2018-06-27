@@ -24,7 +24,7 @@ passport.use(
     new GoogleStrategy({
         clientID: process.env.googleclientID,
         clientSecret: process.env.googleclientSecret,
-        callbackURL: process.env.googlecallbackURL
+        callbackURL: '/auth/google/callback'
     }, (accessToken, refreshToken, profile, done) => {
         GoogleUser.findOne({
             googleId: profile.id
@@ -50,7 +50,7 @@ passport.use(
 passport.use(new FacebookStrategy({
         clientID: process.env.fbAppID,
         clientSecret: process.env.fbAppSecret,
-        callbackURL: process.env.fbcallbackURL,
+        callbackURL: '/auth/facebook/callback'
     },
     function (accessToken, refreshToken, profile, done) {
         FacebookUser.findOne({
