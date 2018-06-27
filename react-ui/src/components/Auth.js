@@ -33,14 +33,14 @@ export class Auth extends React.Component {
               <div className='auth2'>
                 <h2>or</h2>
                 <div className='fb'>
-                <a href='http://localhost:5000/auth/facebook'>
+                <a href='http://vote-it-app.herokuapp.com/auth/facebook'>
                     <Button variant="raised" size="large" color="primary">
                       <h4>CONTINUE WITH FACEBOOK</h4>
                     </Button>
                     </a>
                 </div>
                   <div className='g'> 
-                  <a href='http://localhost:5000/auth/google'>
+                  <a href='http://vote-it-app.herokuapp.coms/auth/google'>
                       <Button variant="raised" size="large" color="secondary">
                         <h4>CONTINUE WITH GOOGLE</h4>
                       </Button>

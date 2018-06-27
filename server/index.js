@@ -19,12 +19,12 @@ if (cluster.isMaster) {
   });
 
 } else {
-  const bodyParser = require('body-parser');s
+  const bodyParser = require('body-parser');
   const cors = require('cors');
   const mongoose = require('mongoose');
   const passport = require('passport');
+  var passportSetup = require('./passport_conf.js');
   require('dotenv').config();
-  require('./passport_conf.js')(passport);
   
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());

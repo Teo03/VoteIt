@@ -27,7 +27,7 @@ export class Login extends React.Component {
                 password: password
             })
             .then(res => {
-                alert(res.data)
+                console.log(res.data)
                 if(res.data === 'logged'){
                     this.setState({error: false});
                     this.props.history.push('/profile');

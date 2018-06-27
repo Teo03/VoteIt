@@ -34,9 +34,9 @@ router.post('/locallogin' , (req, res) => {
 			req.session.user = user;
 			req.session.save();
 			console.log('local user is: ' + req.session.user);
-          	return res.send('logged');
+			return res.send('logged');
         } else {
-          	return res.send('Incorrect Password' + err);
+			return res.send('Incorrect Password');
         }
       });
     })
@@ -67,8 +67,10 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', { failur
 
 router.get('/logout', (req, res) => {
 	if(req.session){
-		req.session.destroy();
+		req.clearCookie("session");
+		req.clearCookie("session.sig");
 		req.logOut();
+		req.session.destroy()
 		res.status(200).send();
 	}
 });
