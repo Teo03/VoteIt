@@ -27,12 +27,13 @@ export class Login extends React.Component {
                 password: password
             })
             .then(res => {
+                alert(res.data)
                 if(res.data === 'logged'){
                     this.setState({error: false});
                     this.props.history.push('/profile');
                 } else {
-                    this.setState({error: true});
                     alert(res.data);
+                    this.setState({error: true});
                 }
             });
         }

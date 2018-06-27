@@ -36,7 +36,7 @@ router.post('/locallogin' , (req, res) => {
 			console.log('local user is: ' + req.session.user);
           	return res.send('logged');
         } else {
-          	return res.send('Incorrect Password');
+          	return res.send('Incorrect Password' + err);
         }
       });
     })
@@ -54,7 +54,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] 
 
 router.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
 	req.session.user = req.user;
-	res.redirect('http://localhost:3000/profile');
+	res.redirect('https://vote-it-app.herokuapp.com/profile');
 });
 
 //FACEBOOK AUTHENTICATION //
@@ -62,7 +62,7 @@ router.get('/auth/facebook', passport.authenticate('facebook'));
  
 router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/loginform' }), function(req, res) {
 	req.session.user = req.user;
-	res.redirect('http://localhost:3000/profile');
+	res.redirect('https://vote-it-app.herokuapp.com/profile');
   });
 
 router.get('/logout', (req, res) => {

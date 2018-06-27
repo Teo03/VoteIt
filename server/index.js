@@ -19,8 +19,7 @@ if (cluster.isMaster) {
   });
 
 } else {
-  const bodyParser = require('body-parser');
-  const expressSession = require('express-session');
+  const bodyParser = require('body-parser');s
   const cors = require('cors');
   const mongoose = require('mongoose');
   const passport = require('passport');
