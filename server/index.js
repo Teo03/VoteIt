@@ -38,7 +38,7 @@ if (cluster.isMaster) {
   }));
 
   // Priority serve any static files.
-  app.use(express.static(path.resolve(__dirname, '../src/build')));
+  app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
   app.use(cors());    
 
   // PASSPORT SETUP //
@@ -64,7 +64,7 @@ mongoose.connect(process.env.DB)
 
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', function(request, response) {
-    response.sendFile(path.resolve(__dirname, '../src/build', 'index.html'));
+    response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
   });
 
   app.listen(PORT, function () {
