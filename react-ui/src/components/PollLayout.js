@@ -6,6 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 import { Chart } from './Chart';
 
 export class PollLayout extends React.Component {
@@ -17,7 +18,9 @@ export class PollLayout extends React.Component {
       creator: '',
       option: '',
       open: false,
-      disabled: false
+      disabled: false,
+      message: '',
+      openMessage: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.addVote = this.addVote.bind(this);
@@ -26,7 +29,7 @@ export class PollLayout extends React.Component {
 
   addVote = () => {
     if (this.state.option === '') {
-        return alert('Please choose option.');
+        return this.setState({openMessage: true, message: 'Please choose option.'});
     } else {
         return axios.post('/submitVote', {
             pollOption: this.state.option,
@@ -51,6 +54,10 @@ export class PollLayout extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
+  };
+
+  handleCloseMessage = () => {
+    this.setState({ openMessage: false });
   };
 
   handleOpen = () => {
@@ -89,6 +96,15 @@ export class PollLayout extends React.Component {
     return (
       <div className='container text-center'>
         <Nav />
+        <Snackbar
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+        }}
+        open={this.state.openMessage}
+        autoHideDuration={4000} 
+        onClose={this.handleCloseMessage}
+        message={<h4>{this.state.message}</h4>}/>
         <h1>{this.state.name}</h1>
         <h3>Created by {this.state.creator}</h3>
         <br />

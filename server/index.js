@@ -26,21 +26,22 @@ if (cluster.isMaster) {
   var passportSetup = require('./passport_conf.js');
   require('dotenv').config();
   
-  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(require('cookie-session')({
     secret: process.env.secret,
-    path: '/',
-    httpOnly: false
+    resave: false,
+    saveUninitialized: true
   }));
 
-  // Priority serve any static files.
-  app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
-  app.use(cors());    
-
-  // PASSPORT SETUP //
+// PASSPORT SETUP //
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Priority serve any static files.
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+app.use(cors());    
+
 
 // ROUTING //
 const routes = require('./routes/routes.js');

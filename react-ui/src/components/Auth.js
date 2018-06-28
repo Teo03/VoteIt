@@ -40,7 +40,7 @@ export class Auth extends React.Component {
                     </a>
                 </div>
                   <div className='g'> 
-                  <a href='http://vote-it-app.herokuapp.coms/auth/google'>
+                  <a href='http://vote-it-app.herokuapp.com/auth/google'>
                       <Button variant="raised" size="large" color="secondary">
                         <h4>CONTINUE WITH GOOGLE</h4>
                       </Button>

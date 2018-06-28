@@ -20,33 +20,41 @@ router.post('/localsignup', function(req, res, next) {
   });
   // LOCAL LOGIN //
   router.post('/locallogin', passport.authenticate('local'), function(req, res) {
+	req.session.user = req.user;
+	req.session.save();
 	res.send('logged');
   });
 
   
 // GOOGLE AUTHENTICATION //
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }, {session: true}));
 
 router.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
-	res.redirect('https://vote-it-app.herokuapp.com/profile');
+	req.session.user = req.user;
+	res.redirect('/profile');
 });
 
 //FACEBOOK AUTHENTICATION //
 router.get('/auth/facebook', passport.authenticate('facebook'));
  
-router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/loginform' }), function(req, res) {
-	res.redirect('https://vote-it-app.herokuapp.com/profile');
+router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/auth' }), function(req, res) {
+	req.session.user = req.user;
+	res.redirect('/profile');
   });
 
 router.get('/logout', (req, res) => {
 	if(req.session){
 		req.logout();
+		req.logOut();
+		req.session = null;
+		res.clearCookie('session.sig');
+		res.clearCookie('session');
 		res.status(200).send();
 	}
 });
 
 router.get('/userLogged', (req, res) => {
-	if(req.user){
+	if(req.session.user){
 		res.send('/profile');
 	} else {
 		res.send('/auth');
@@ -54,7 +62,7 @@ router.get('/userLogged', (req, res) => {
 });
 
 router.get('/info', (req, res) => {
-	return res.send(req.user);
+	return res.send(req.session.user);
 });
 
 
